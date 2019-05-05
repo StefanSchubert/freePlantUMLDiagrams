@@ -10,11 +10,11 @@ cloud "Home LAN\n" {
 
 
  node "ipv4 Device 1" as d41 {
-  component [WebApp1\n8081]
+  component [WebApp1\n8080]
  }
 
  node "ipv4 Device 2" as d42 {
-  component [WebApp2\n8082]
+  component [WebApp2\n8080]
  }
 
  node "ipv6 Device 3" as d61 {
@@ -32,8 +32,8 @@ cloud "Home LAN\n" {
 
    [NAT] <- ipv4
 
-   [WebApp1\n8081] <-- ipv4 : PortForwarding\n80->8080
-   [WebApp2\n8082] <-- ipv4 : PortForwarding\n81->8081
+   [WebApp1\n8080] <-- [NAT] : PortForwarding\n80->Device1,8080
+   [WebApp2\n8080] <-- [NAT] : PortForwarding\n81->Device2,8080
 
    [WebApp3\n80] <-- ipv6 : Firewall allow route to\ntarget,tcp,ipv6,p80
    [WebApp4\n80] <-- ipv6 : Firewall allow route to\ntarget,tcp,ipv6,p80
