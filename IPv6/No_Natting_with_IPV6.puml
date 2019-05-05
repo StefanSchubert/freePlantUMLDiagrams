@@ -1,0 +1,57 @@
+@startuml
+
+' skinparam monochrome true
+skinparam componentStyle uml2
+skinparam handwritten true
+
+title ipv6 is handled different then ipv4 for remote access (No NAT)
+
+cloud "Home LAN\n" {
+
+
+ node "ipv4 Device 1" as d41 {
+  component [WebApp1\n8081]
+ }
+
+ node "ipv4 Device 2" as d42 {
+  component [WebApp2\n8082]
+ }
+
+ node "ipv6 Device 3" as d61 {
+   component [WebApp3\n80]
+ }
+
+ node "ipv6 Device 4" as d62 {
+   component [WebApp4\n80]
+ }
+
+ node "Home Router" {
+
+   interface ipv4
+   interface ipv6
+
+   [NAT] <- ipv4
+
+   [WebApp1\n8081] <-- ipv4 : PortForwarding\n80->8080
+   [WebApp2\n8082] <-- ipv4 : PortForwarding\n81->8081
+
+   [WebApp3\n80] <-- ipv6 : Firewall allow route to\ntarget,tcp,ipv6,p80
+   [WebApp4\n80] <-- ipv6 : Firewall allow route to\ntarget,tcp,ipv6,p80
+ }
+
+
+
+}
+
+cloud "ipv4 based Internet\n" {
+ component [WebBrowser] as wb4
+ wb4 ..> ipv4 : "calls\nhttp://RoutersIP:80\nhttp://RoutersIP:81"
+}
+
+cloud "ipv6 based Internet\n" as ip6World {
+  component [WebBrowser] as wb6
+ wb6 ..> ipv6 : "calls\nhttp://[official ipv6 IP of Device 3]:80\nhttp://[official ipv6 IP of Device 4]:80"
+ note right of wb6 : Using AAAA record from DNS entries.\nSo the target device must be known\nby the DNS, typically published\nvia DnyDNS for private setups.
+}
+
+@enduml

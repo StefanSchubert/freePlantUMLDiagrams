@@ -2,6 +2,7 @@
 
 ' skinparam monochrome true
 skinparam componentStyle uml2
+skinparam handwritten true
 
 title DS-lite based routing
 
