@@ -38,8 +38,8 @@ cloud "WAN (Internet-Provider)\n" {
 
  node "AFTR Gateway" as aftr {
 
-   [NAT] ..> wipv6 : use
-'  [NAT] ..> wipv4 : use
+   [DS-lite endpoint] ..> wipv6 : use
+'  [DS-lite endpoint] ..> wipv4 : use
 
    [Routing]
  }
