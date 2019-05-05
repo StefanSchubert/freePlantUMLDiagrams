@@ -1,0 +1,75 @@
+@startuml
+
+' skinparam monochrome true
+skinparam componentStyle uml2
+
+title DS-lite based routing
+
+cloud "Home LAN\n" {
+
+ node "Home Router" {
+
+   interface ipv6
+   interface ipv4
+
+   [4in6\nWrapper] <- ipv4
+   [4in6\nWrapper] -> ipv6
+
+   [4in6\nWrapper] .> [Connector]
+
+ }
+
+ node "old school Device" {
+   [ipv4Network] ..> ipv4 : use
+ }
+
+ node "new world Device" as pcNW {
+   [ipv6Network] ..> ipv6 : use
+ }
+ note bottom of pcNW : 'New' means ipv6\nintroduction in 1998!
+
+}
+
+cloud "WAN (Internet-Provider)\n" {
+
+ interface ipv6 as wipv6
+' interface ipv4 as wipv4
+
+ node "AFTR Gateway" as aftr {
+
+   [NAT] ..> wipv6 : use
+'  [NAT] ..> wipv4 : use
+
+   [Routing]
+ }
+ note top of aftr : Address Family Transition Router\nUnwraps the 4in6 packages and\nforwards the request in ipv4
+
+ [Connector] ..> wipv6 : use with 4in6 DS-lite tunnel\nfor ipv4 packages
+
+}
+
+
+
+cloud "ipv4 based Internet\n" {
+
+ interface ipv4 as eipv4
+
+ [ip4Target] ..> eipv4 : use
+
+ [Routing] --> eipv4
+
+}
+
+cloud "ipv6 based Internet\n" {
+
+ interface ipv6 as eipv6
+
+ [ip6Target] ..> eipv6 : use
+
+ [Routing] --> eipv6
+
+}
+
+
+
+@enduml
