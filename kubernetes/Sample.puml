@@ -1,0 +1,50 @@
+@startuml
+
+skinparam componentStyle uml2
+!include <kubernetes/k8s-skinparam>
+
+skinparam title {
+    BorderColor black
+    FontName Courier
+    FontSize 8
+}
+
+title
+Now in stblib https://plantuml.com/de/stdlib
+Sprite-Overview https://github.com/michiel/plantuml-kubernetes-sprites
+end title
+
+
+' !include <kubernetes/k8s-sprites-unlabeled-25pct>
+!include <kubernetes/k8s-sprites-labeled-25pct>
+
+actor Someone
+
+package "Namespace XY" {
+ ' component "<$master>" as master
+ ' component "<$etcd>" as etcd
+ ' component "<$node>" as node
+  component "<$pod>\nMyApp" as app
+  component "<$svc>\nMyAppService" as svc
+  component "<$ing>\nmyApp.myOrg.de" as ing
+  component "<$cm>\napplication.properties" as conf
+  component "<$secret>\ndb-credentials ENV" as secret
+  component "<$pvc>\n2Gi" as pvc
+  component "<$pv>\nstorage" as pv
+}
+
+package "Infrastructure" {
+  component "<$sc>\nsc app-data" as sc
+
+}
+
+Someone --> ing : req http://myApp.myOrg.de
+ing --> svc : port 8888
+svc --> app : port 8080
+app --> conf : uses
+app --> secret : uses
+app --> pvc : mount on /app/data
+pvc ..> pv : binds
+pv <.. sc : provides quota
+
+@enduml
